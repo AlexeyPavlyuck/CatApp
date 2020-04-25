@@ -10,6 +10,14 @@ import Foundation
 
 struct Breeds: Decodable {
     
+    let id: String?
     let name: String?
-  
+    let description: String?
+    
+}
+
+struct BreedImage: Decodable {
+    
+    let url: String?
+    
 }

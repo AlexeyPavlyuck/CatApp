@@ -12,13 +12,15 @@ class BreedsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchData()
+        fetchBreedsData()
     }
     
     private var breeds = [Breeds]()
     private var breedName: String?
+    private var breedID: String?
+    private var breedDescr: String?
     
-    func fetchData() {
+    func fetchBreedsData() {
             
     let headers = ["x-api-key": "b447e7b7-c6b2-4128-b0a9-1c67f5f81539"]
 
@@ -36,6 +38,7 @@ class BreedsTableViewController: UITableViewController {
                 do {
                     let decoder = JSONDecoder()
                     self.breeds = try decoder.decode([Breeds].self, from: data)
+
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
@@ -45,6 +48,7 @@ class BreedsTableViewController: UITableViewController {
                 
             }.resume()
         }
+    
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return breeds.count
@@ -57,9 +61,22 @@ class BreedsTableViewController: UITableViewController {
         return cell
     }
     
-//   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//
-//     let breed = breeds[indexPath.row]
-//     breedName = breed.name
-//    }
+   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+     let breed = breeds[indexPath.row]
+     breedName = breed.name
+     breedID = breed.id
+     breedDescr = breed.description
+    
+     performSegue(withIdentifier: "AboutSegue", sender: self)
+    
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
+                let aboutBreedViewController = segue.destination as! AboutBreedViewController
+                aboutBreedViewController.selectedBreedName = breedName
+                aboutBreedViewController.selectedBreedID = breedID
+                aboutBreedViewController.selectedbreedDescr = breedDescr
+            }
+    
 }
