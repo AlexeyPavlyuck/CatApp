@@ -7,8 +7,9 @@
 //
 
 import UIKit
-
 class BreedsTableViewController: UITableViewController {
+    
+    @IBOutlet weak var activIndicator: UIActivityIndicatorView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +20,10 @@ class BreedsTableViewController: UITableViewController {
     private var breedName: String?
     private var breedID: String?
     private var breedDescr: String?
+    private var breedWeight: String?
+    private var breedTemperament: String?
+    private var breedOrigin: String?
+    private var breedLifeSpan: String?
     
     func fetchBreedsData() {
             
@@ -40,7 +45,12 @@ class BreedsTableViewController: UITableViewController {
                     self.breeds = try decoder.decode([Breeds].self, from: data)
 
                     DispatchQueue.main.async {
+                        self.activIndicator.stopAnimating()
+                        self.activIndicator.isHidden = true
+                        self.activIndicator.frame = CGRect(x: 0, y: 0, width: 0, height: 0)
                         self.tableView.reloadData()
+                        
+                        
                     }
                 } catch let error {
                     print("Error serialization json", error)
@@ -56,7 +66,7 @@ class BreedsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BreedCell") as! BreedCell
-              let breed = breeds[indexPath.row]
+            let breed = breeds[indexPath.row]
             cell.breedLabel.text = breed.name
         return cell
     }
@@ -67,16 +77,24 @@ class BreedsTableViewController: UITableViewController {
      breedName = breed.name
      breedID = breed.id
      breedDescr = breed.description
+     breedWeight = breed.weight.metric
+     breedTemperament = breed.temperament
+     breedOrigin = breed.origin
+     breedLifeSpan = breed.life_span
     
      performSegue(withIdentifier: "AboutSegue", sender: self)
     
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
-                let aboutBreedViewController = segue.destination as! AboutBreedViewController
-                aboutBreedViewController.selectedBreedName = breedName
-                aboutBreedViewController.selectedBreedID = breedID
-                aboutBreedViewController.selectedbreedDescr = breedDescr
-            }
+    let aboutBreedViewController = segue.destination as! AboutBreedViewController
+        aboutBreedViewController.selectedBreedName = breedName
+        aboutBreedViewController.selectedBreedID = breedID
+        aboutBreedViewController.selectedbreedDescr = breedDescr
+        aboutBreedViewController.selectedBreedWeight = breedWeight
+        aboutBreedViewController.selectedBreedTemperament = breedTemperament
+        aboutBreedViewController.selectedBreedOrigin = breedOrigin
+        aboutBreedViewController.selectedBreedLifeSpan = breedLifeSpan
+    }
     
 }

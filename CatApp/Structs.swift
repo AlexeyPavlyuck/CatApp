@@ -8,16 +8,34 @@
 
 import Foundation
 
-struct Breeds: Decodable {
+struct Breeds: Codable {
     
     let id: String?
     let name: String?
     let description: String?
+    let weight: Weight
+    let temperament: String?
+    let origin: String?
+    let life_span: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case weight, id, name
+        case description
+        case temperament
+        case origin
+        case life_span
+    }
     
 }
 
-struct BreedImage: Decodable {
+struct Weight: Codable {
+    let metric: String?
+}
+
+struct BreedImage: Codable {
     
     let url: String?
     
 }
+
+

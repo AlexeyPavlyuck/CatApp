@@ -13,12 +13,19 @@ class AboutBreedViewController: UIViewController {
     var selectedBreedName: String?
     var selectedBreedID: String?
     var selectedbreedDescr: String?
-    
+    var selectedBreedWeight: String?
+    var selectedBreedTemperament: String?
+    var selectedBreedOrigin: String?
+    var selectedBreedLifeSpan : String?
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var imageBreed: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var newImagebutton: UIButton!
+    @IBOutlet weak var weightLabel: UILabel!
+    @IBOutlet weak var originLabel: UILabel!
+    @IBOutlet weak var temperamentLabel: UILabel!
+    @IBOutlet weak var lifeSpanLabel: UILabel!
     
     @IBAction func newImg(_ sender: UIButton) {
         imageBreed.isHidden = true
@@ -27,15 +34,21 @@ class AboutBreedViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         title = selectedBreedName
         
         activityIndicator.isHidden = true
         activityIndicator.hidesWhenStopped = true
         
         newImagebutton.layer.cornerRadius = 17
-
+       
         fetchBreedImage()
+        
         descriptionLabel.text = selectedbreedDescr
+        originLabel.text = selectedBreedOrigin
+        temperamentLabel.text = selectedBreedTemperament
+        weightLabel.text = "\(selectedBreedWeight!) kg"
+        lifeSpanLabel.text = "\(selectedBreedLifeSpan!) years"
         
     }
     
@@ -50,7 +63,6 @@ class AboutBreedViewController: UIViewController {
                                       timeoutInterval: 10.0)
     request.httpMethod = "GET"
     request.allHTTPHeaderFields = headers
-
             
             URLSession.shared.dataTask(with: request as URLRequest) { (data, response, error) in
                 
@@ -60,11 +72,12 @@ class AboutBreedViewController: UIViewController {
                     let decoder = JSONDecoder()
                     let imgURL = try decoder.decode([BreedImage].self, from: data)
                     guard let url = URL(string: imgURL[0].url!) else {return}
-                    DispatchQueue.main.async {
+                    DispatchQueue.global(qos: .userInteractive).async {
                         let img = try? Data(contentsOf: url)
-                        self.activityIndicator.stopAnimating()
-                        self.imageBreed.isHidden = false
-                        self.imageBreed.image = UIImage(data: img!)
+                        DispatchQueue.main.async{
+                            self.imageBreed.isHidden = false
+                             self.activityIndicator.stopAnimating()
+                            self.imageBreed.image = UIImage(data: img!)}
                     }
                 } catch let error {
                     print("Error serialization json", error)
@@ -72,9 +85,4 @@ class AboutBreedViewController: UIViewController {
                 
             }.resume()
         }
-    
-    
-    
-
-
 }

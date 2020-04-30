@@ -11,6 +11,6 @@ import UIKit
 class BreedCell: UITableViewCell {
 
     @IBOutlet weak var breedLabel: UILabel!
-    
-
 }
+
+
